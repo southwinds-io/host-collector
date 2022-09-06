@@ -1,0 +1,59 @@
+---
+env:
+  APP_VERSION: 1.0.0
+  BUILD_VERSION: ${APP_VERSION}-${ARTISAN_REF}
+  ART_GROUP: lib
+  APP_NAME: telemetry
+  CGO_ENABLED: 0
+  GOARCH: amd64
+  ART_REG: artr.gdn
+
+labels:
+  author: SouthWinds Tech Ltd
+  email: info@southwinds.io
+  application: OpenTelemetry Host Collector
+
+functions:
+  - name: set-version
+    description: set new version reference
+    run:
+      - bash -c "echo ${ARTISAN_REF} > ${PWD}/version"
+
+  - name: build
+    description: builds the host collector package for the linux platform
+    env:
+      GOOS: linux
+    run:
+      - $(set-version)
+      - rm -rf install/telemetry && install/telem.yaml
+      - cp telem.yaml install/
+      - go build -ldflags="-X 'southwinds.dev/host-collector/collector.Version=${BUILD_VERSION}'" -o install/telemetry -v
+      - art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -p linux
+      - art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
+
+  - name: push
+    description: push to Artisan registry
+    run:
+      - art push ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version))
+      - art push ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
+
+  - name: manifest
+    run:
+      - rm -f ./manifest.md
+      - art manifest ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -o=mdf
+
+  - name: all
+    description: run new version, build and push
+    run:
+      - $(set-version)
+      - $(build)
+      - $(manifest)
+      - $(push)
+
+profiles:
+  - name: linux
+    default: true
+    type: content/binary
+    license: Apache Version 2
+    target: install
+...
