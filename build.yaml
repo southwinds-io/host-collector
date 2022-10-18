@@ -19,7 +19,7 @@ functions:
     run:
       - bash -c "echo ${ARTISAN_REF} > ${PWD}/version"
 
-  - name: build
+  - name: go-build
     description: builds the host collector package for the linux platform
     env:
       GOOS: linux
@@ -28,6 +28,14 @@ functions:
       - rm -rf install/telemetry && install/telem.yaml
       - cp telem.yaml install/
       - go build -ldflags="-X 'southwinds.dev/host-collector/collector.Version=${BUILD_VERSION}'" -o install/telemetry -v
+
+  - name: build
+    description: builds the host collector package for the linux platform
+    env:
+      GOOS: linux
+    run:
+      - $(set-version)
+      - $(go-build)      
       - art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -p linux
       - art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
 
