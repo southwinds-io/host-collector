@@ -4,7 +4,7 @@ go 1.19
 
 replace (
 	southwinds.dev/artisan => ../artisan
-	southwinds.dev/file-exporter => ../file-exporter
+	southwinds.dev/file-exporter => ../ot-file-exporter
 	southwinds.dev/http => ../http
 )
 
