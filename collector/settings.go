@@ -9,7 +9,9 @@ package collector
 
 import (
 	"os"
-	"southwinds.dev/file-exporter"
+
+	filexp "southwinds.dev/file-exporter"
+	redfish "southwinds.dev/ot_redfish_receiver"
 
 	"github.com/observiq/observiq-otel-collector/processor/resourceattributetransposerprocessor"
 
@@ -29,6 +31,7 @@ func NewSettings(configPaths []string, version string, loggingOpts []zap.Option)
 	// configure receivers
 	receiverMap, err := component.MakeReceiverFactoryMap(
 		hostmetricsreceiver.NewFactory(),
+		redfish.NewFactory(),
 	)
 	if err != nil {
 		return nil, err
@@ -48,7 +51,7 @@ func NewSettings(configPaths []string, version string, loggingOpts []zap.Option)
 	}
 	// configure exporters
 	exporterMap, err := component.MakeExporterFactoryMap(
-		fileexporter.NewFactory(),
+		filexp.NewFactory(),
 	)
 
 	if err != nil {

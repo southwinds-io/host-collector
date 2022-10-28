@@ -2,3 +2,4 @@
 *.iml
 install/telem.yaml
 install/telemetry
+install/host-collector
