@@ -32,11 +32,34 @@ processors:
 exporters:
   file:
     path: /tmp/telemetry
-    fileSizeKb: 15
+    # use default approach of "eventsPerFile" for file size and its default value one event per file
+    # default can be changed to "fileSizeKb" for file size and its default value will be 100kb
+    #default: eventsPerFile original
+    # use either fileSizeKb or eventsPerFile to defined custom size for the file.
+    fileSizeKb: 30
+    #eventsPerFile: 2
+    #format of the exported data can be json or protobuf
+    format: protobuf
+    folderName: hosttelem
+  file/2:
+    path: /tmp/telem
+    # use default approach of "eventsPerFile" for file size and its default value one event per file
+    # default can be changed to "fileSizeKb" for file size and its default value will be 100kb
+    #default: eventsPerFile original
+    # use either fileSizeKb or eventsPerFile to defined custom size for the file.
+    fileSizeKb: 30
+    #eventsPerFile: 2
+    #format of the exported data can be json or protobuf
+    format: protobuf
+    folderName: redfish    
 service:
   pipelines:
     metrics:
       receivers: [hostmetrics]
       processors: [resourcedetection/system, resourceattributetransposer, batch]
       exporters: [file]
+    metrics/2:
+      receivers: [hostmetrics]
+      processors: [resourcedetection/system, resourceattributetransposer, batch]
+      exporters: [file/2]      
 ...
