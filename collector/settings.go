@@ -17,6 +17,8 @@ import (
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver"
+
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/syslogreceiver"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/confmap"
 	"go.opentelemetry.io/collector/confmap/converter/expandconverter"
@@ -32,6 +34,7 @@ func NewSettings(configPaths []string, version string, loggingOpts []zap.Option)
 	receiverMap, err := component.MakeReceiverFactoryMap(
 		hostmetricsreceiver.NewFactory(),
 		redfish.NewFactory(),
+		syslogreceiver.NewFactory(),
 	)
 	if err != nil {
 		return nil, err
