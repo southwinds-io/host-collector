@@ -18,6 +18,8 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver"
 
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver"
+	//syslogreceiver is required else filelogreceiver configuration fails saying invalid syslog_parser parser
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/syslogreceiver"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/confmap"
@@ -34,7 +36,10 @@ func NewSettings(configPaths []string, version string, loggingOpts []zap.Option)
 	receiverMap, err := component.MakeReceiverFactoryMap(
 		hostmetricsreceiver.NewFactory(),
 		redfish.NewFactory(),
+		//NOTE:- some how syslog receiver is required to use file log receiver because else
+		// file log receiver giving error saying invalid syslog_parser parser configured in telem.yaml
 		syslogreceiver.NewFactory(),
+		filelogreceiver.NewFactory(),
 	)
 	if err != nil {
 		return nil, err

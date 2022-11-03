@@ -11,10 +11,12 @@ receivers:
       network:
       paging:
       processes:
-  syslog:
-    tcp:
-      listen_address: "0.0.0.0:54527"
-    protocol: rfc3164
+  filelog:
+    include: [ /var/log/syslog ]
+    start_at: end
+    operators:
+      - type: syslog_parser
+        protocol: rfc5424        
   redfish:
     host: "iDRAC-server-host-name"
     username: "username to connect iDRAC sever"
@@ -41,30 +43,30 @@ exporters:
     # default can be changed to "fileSizeKb" for file size and its default value will be 100kb
     #default: eventsPerFile original
     # use either fileSizeKb or eventsPerFile to defined custom size for the file.
-    fileSizeKb: 30
-    #eventsPerFile: 2
+    #fileSizeKb: 30
+    eventsPerFile: 2
     #format of the exported data can be json or protobuf
-    format: json
+    format: protobuf
   file/redfish/logs:
     path: /tmp/redfish/logs
-    eventsPerFile: 1
-    format: json
+    eventsPerFile: 2
+    format: protobuf
   file/host/met:
     path: /tmp/host/metrics
-    fileSizeKb: 30
-    format: json
+    eventsPerFile: 2
+    format: protobuf
   file/host/log:
     path: /tmp/host/logs
     eventsPerFile: 2
-    format: json    
+    format: protobuf    
 service:
   pipelines:
     metrics:
       receivers: [hostmetrics]
       processors: [resourcedetection/system, resourceattributetransposer, batch]
-      exporters: [file/host/met]  
+      exporters: [file/host/met]   
     logs:
-      receivers: [syslog]
+      receivers: [filelog]
       processors: [resourceattributetransposer,batch]
       exporters: [file/host/log]
 ...
