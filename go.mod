@@ -4,6 +4,7 @@ go 1.19
 
 replace (
 	southwinds.dev/artisan => ../artisan
+	southwinds.dev/os => ../os
 	southwinds.dev/file-exporter => ../ot-file-exporter
 	southwinds.dev/http => ../http
 	southwinds.dev/ot_redfish_receiver => ../ot-redfish-receiver
@@ -18,7 +19,7 @@ require (
 	github.com/spf13/cobra v1.5.0
 	go.opentelemetry.io/collector v0.56.0
 	go.uber.org/zap v1.23.0
-	southwinds.dev/artisan v0.0.0-20220902152542-3b075fc8ab73
+	southwinds.dev/artisan v0.0.0-20221104135442-166153ace858
 	southwinds.dev/file-exporter v0.0.0-00010101000000-000000000000
 	southwinds.dev/ot_redfish_receiver v0.0.0-00010101000000-000000000000
 )
@@ -162,5 +163,5 @@ require (
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
-	southwinds.dev/os v0.0.0-20220901065504-762d072c036a // indirect
+	southwinds.dev/os v0.0.0-20221107115514-6bcbf59b1755 // indirect
 )
