@@ -18,10 +18,10 @@ receivers:
       - type: syslog_parser
         protocol: rfc5424        
   redfish:
-    host: "iDRAC-server-host-name"
-    username: "username to connect iDRAC sever"
-    password: "password to connect iDRAC sever"
-    token: "or token to connect iDRAC sever"
+    host: ""
+    username: ""
+    password: ""
+#    token: "or token to connect iDRAC sever"
 processors:
   resourcedetection/system:
     detectors: [ "system" ]
@@ -44,29 +44,25 @@ exporters:
     #default: eventsPerFile original
     # use either fileSizeKb or eventsPerFile to defined custom size for the file.
     #fileSizeKb: 30
-    eventsPerFile: 2
+    eventsPerFile: 3
     #format of the exported data can be json or protobuf
     format: protobuf
   file/redfish/logs:
     path: /tmp/redfish/logs
-    eventsPerFile: 2
+    eventsPerFile: 3
     format: protobuf
   file/host/met:
     path: /tmp/host/metrics
-    eventsPerFile: 2
+    eventsPerFile: 3
     format: protobuf
   file/host/log:
     path: /tmp/host/logs
-    eventsPerFile: 2
+    eventsPerFile: 3
     format: protobuf    
 service:
   pipelines:
     metrics:
-      receivers: [hostmetrics]
+      receivers: [redfish]
       processors: [resourcedetection/system, resourceattributetransposer, batch]
-      exporters: [file/host/met]   
-    logs:
-      receivers: [filelog]
-      processors: [resourceattributetransposer,batch]
-      exporters: [file/host/log]
+      exporters: [file/redfish/met]
 ...
