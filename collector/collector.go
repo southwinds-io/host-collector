@@ -123,7 +123,7 @@ func (c *otCollector) waitForStartBeforeShutdown(ctx context.Context, startupErr
 	ticker := time.NewTicker(time.Millisecond * 250)
 	defer ticker.Stop()
 	for {
-		if c.svc.GetState() == service.Running {
+		if c.svc.GetState() == service.StateRunning {
 			c.setStatus(true, nil)
 			return nil
 		}

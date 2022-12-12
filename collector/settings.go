@@ -20,6 +20,7 @@ import (
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver"
 	//syslogreceiver is required else filelogreceiver configuration fails saying invalid syslog_parser parser
+
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/syslogreceiver"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/confmap"
@@ -59,6 +60,7 @@ func NewSettings(configPaths []string, version string, loggingOpts []zap.Option)
 	}
 	// configure exporters
 	exporterMap, err := component.MakeExporterFactoryMap(
+		//fe.NewFactory(),
 		filexp.NewFactory(),
 	)
 
@@ -72,10 +74,13 @@ func NewSettings(configPaths []string, version string, loggingOpts []zap.Option)
 	}
 	// reads the configuration from a file
 	fileP := fileprovider.New()
+
 	configProviderSettings := service.ConfigProviderSettings{
-		Locations:     configPaths,
-		MapProviders:  map[string]confmap.Provider{fileP.Scheme(): fileP},
-		MapConverters: []confmap.Converter{expandconverter.New()},
+		ResolverSettings: confmap.ResolverSettings{
+			URIs:       configPaths,
+			Providers:  map[string]confmap.Provider{fileP.Scheme(): fileP},
+			Converters: []confmap.Converter{expandconverter.New()},
+		},
 	}
 	provider, err := service.NewConfigProvider(configProviderSettings)
 	if err != nil {
