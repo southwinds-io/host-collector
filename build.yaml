@@ -77,8 +77,8 @@ functions:
     run:
       - $(set-version)
       - $(go-build-linux-arm64)      
-      - art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -p linux-arm
-      - art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
+      - sh -c 'cat ./version | xargs -I{} art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} -p linux-arm'
+      - sh -c 'cat ./version | xargs -I{} art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest'
 
   - name: go-build-linux-amd64
     description: builds host collector binary for the linux amd64 platform
@@ -96,8 +96,8 @@ functions:
     run:
       - $(set-version)
       - $(go-build-linux-amd64)      
-      - art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -p linux
-      - art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
+      - sh -c 'cat ./version | xargs -I{} art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} -p linux'
+      - sh -c 'cat ./version | xargs -I{} art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest'
 
   - name: go-build-mac
     description: builds host collector binary for the mac platform
@@ -114,8 +114,8 @@ functions:
     run:
       - $(set-version)
       - $(go-build-mac)      
-      - art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -p mac
-      - art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
+      - sh -c 'cat ./version | xargs -I{} art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} -p mac'
+      - sh -c 'cat ./version | xargs -I{} art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest'
 
   - name: go-build-mac-arm
     description: builds host collector binary for the mac platform
@@ -133,19 +133,19 @@ functions:
     run:
       - $(set-version)
       - $(go-build-mac-arm)      
-      - art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -p mac-arm
-      - art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
+      - sh -c 'cat ./version | xargs -I{} art build . -t ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} -p mac-arm'
+      - sh -c 'cat ./version | xargs -I{} art tag ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest'
 
   - name: push
     description: push to Artisan registry
     run:
-      - art push ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version))
+      - sh -c 'cat ./version | xargs -I{} art push ${ART_REG}/${ART_GROUP}/${APP_NAME}:{}'
       - art push ${ART_REG}/${ART_GROUP}/${APP_NAME}:latest
 
   - name: manifest
     run:
       - rm -f ./manifest.md
-      - art manifest ${ART_REG}/${ART_GROUP}/${APP_NAME}:$((cat ./version)) -o=mdf
+      - sh -c 'cat ./version | xargs -I{} art manifest ${ART_REG}/${ART_GROUP}/${APP_NAME}:{} -o=mdf'
 
   - name: pkg-linux-amd
     description: builds and publish host collector artisan package for the linux amd64 platform
